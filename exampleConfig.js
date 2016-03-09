@@ -113,6 +113,8 @@ Optional Variables:
                          changes. The default is true. Set this to false to disable.
 */
 { port: 8125
+, expressPort: 5000
+, flushInterval: 5000
 , tokens: ['foo', 'bar']
 , backends: [ "./backends/console", "../../server" ]
 }

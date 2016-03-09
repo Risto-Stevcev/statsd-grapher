@@ -1,11 +1,10 @@
 body {
-  font-family: 'Josefin Sans', 'Arial';
+  font-family: 'Titillium Web', 'Verdana', 'Arial';
 }
-h3 > span {
-  color: lightgray;
+h3 svg {
   visibility: hidden;
 }
-h3 > a:hover + span {
+h3:hover svg {
   visibility: visible;
 }
 a {

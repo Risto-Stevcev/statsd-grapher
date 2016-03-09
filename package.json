@@ -1,25 +1,40 @@
 {
   "name": "statsd-grapher",
-  "version": "0.0.1",
+  "version": "0.0.10",
   "description": "A statsd backend that serves an http page with the graphical data",
-  "main": "exampleConfig.js",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Risto-Stevcev/statsd-grapher.git"
+  },
   "dependencies": {
     "express": "4.13.x",
     "jade": "1.11.x",
     "ramda": "0.19.x",
-    "sanctuary": "^0.9.0",
-    "statsd": "0.7.x"
+    "sanctuary": "0.9.x",
+    "statsd": "^0.7.2"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "gulp-webdriver": "1.0.3",
-    "istanbul": "^0.4.2",
-    "mocha": "^2.4.5"
+    "chai": "3.5.x",
+    "chai-as-promised": "5.2.x",
+    "docco": "0.7.x",
+    "glob": "^7.0.3",
+    "gulp": "3.9.x",
+    "gulp-coveralls": "0.1.x",
+    "gulp-istanbul": "0.10.x",
+    "gulp-mocha": "2.2.x",
+    "gulp-webdriver": "1.0.x",
+    "mocha-lcov-reporter": "1.2.x",
+    "node-statsd": "0.1.x",
+    "phantomjs": "2.1.x",
+    "pure-random": "0.1.x",
+    "selenium-standalone": "5.0.x"
   },
   "scripts": {
     "start": "node server.js",
-    "test": "./node_modules/.bin/mocha",
-    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha"
+    "docs": "./node_modules/.bin/gulp docs",
+    "test": "./node_modules/.bin/gulp test:unit",
+    "coveralls": "./node_modules/.bin/gulp coveralls"
   },
   "author": "Risto Stevcev",
   "license": "MIT",

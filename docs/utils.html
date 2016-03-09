@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>utils.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>utils.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> R = <span class="hljs-built_in">require</span>(<span class="hljs-string">'ramda'</span>)
+    , S = <span class="hljs-built_in">require</span>(<span class="hljs-string">'sanctuary'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p><code>log :: a -&gt; a</code><br>Uses <code>R.tap</code> to print to console</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> log = R.tap(x =&gt; <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'log: '</span>, x))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p><code>printLens :: Lens s a -&gt; String</code><br>Prints <code>lensPath</code>/<code>lensProp</code> lenses</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> printLens = lens =&gt; <span class="hljs-built_in">JSON</span>.stringify(R.set(lens, <span class="hljs-literal">true</span>, {}))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p><code>toInt :: String -&gt; Int</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> toInt = R.curryN(<span class="hljs-number">1</span>, <span class="hljs-built_in">parseInt</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p><code>mLenses :: String -&gt; Object -&gt; [Lens s a]</code><br>Takes a metric type and the metrics, and returns lenss to all the keys in that metric</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> mLenses = R.curry((type, metrics) =&gt; S.pipe([R.prop(type), R.keys, R.map(R.pipe(R.pair(type), R.lensPath))], metrics))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p><code>_initStats :: Object -&gt; [Lens s a] -&gt; Object -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> _initStats = R.curry((object, mLenses, stats) =&gt;
+  R.reduce((stats, mLens) =&gt;
+    R.when(R.pipe(R.view(mLens), R.isNil), R.set(mLens, object))(stats), stats, mLenses))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p><code>:: [Lens s a] -&gt; Object -&gt; Object</code> </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> initStats  = _initStats({ x: [], y: [] })
+    , initTimers = _initStats({ hour: [], x: [], y: [], error_y: { array: [], arrayminus: [] } })</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p><code>:: Lens s a =&gt; Lens s a</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> x      = lens =&gt; R.compose(lens, R.lensProp(<span class="hljs-string">'x'</span>))
+    , y      = lens =&gt; R.compose(lens, R.lensProp(<span class="hljs-string">'y'</span>))
+    , hour   = lens =&gt; R.compose(lens, R.lensProp(<span class="hljs-string">'hour'</span>))
+    , store  = lens =&gt; R.compose(lens, R.lensProp(<span class="hljs-string">'store'</span>))
+    , aplus  = lens =&gt; R.compose(lens, R.lensPath([<span class="hljs-string">'error_y'</span>, <span class="hljs-string">'array'</span>]))
+    , aminus = lens =&gt; R.compose(lens, R.lensPath([<span class="hljs-string">'error_y'</span>, <span class="hljs-string">'arrayminus'</span>]))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p><code>setX :: Int -&gt; Object -&gt; [Lens s a] -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setX = R.curry((timestamp, mLenses, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; 
+    R.over(x(mLens), R.append(timestamp), stats), stats, mLenses))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p><code>setY :: String -&gt; Object -&gt; [Lens s a] -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setY = R.curry((metrics, mLenses, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; { 
+    <span class="hljs-keyword">return</span> S.pipe([R.view(store(mLens)), R.isNil, R.not], metrics) ?
+           R.over(y(mLens), R.concat(R.__, S.pipe([R.keys, R.map(toInt)], R.view(store(mLens), metrics))), stats) :
+           R.over(y(mLens), R.append(R.view(mLens, metrics)), stats)
+  }, stats, mLenses))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p><code>setXY :: Object -&gt; Int -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setXY = R.curry((timestamp, metrics, stats) =&gt; {
+  <span class="hljs-keyword">const</span> lenses = R.flatten([<span class="hljs-string">'counters'</span>, <span class="hljs-string">'counter_rates'</span>, <span class="hljs-string">'gauges'</span>].map(type =&gt; mLenses(type, metrics)))
+  <span class="hljs-keyword">return</span> S.pipe([initStats(lenses), setX(timestamp, lenses), setY(metrics, lenses)], stats)
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p><code>setSets :: String -&gt; Object -&gt; Object -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setSets = R.curry((timestamp, metrics, stats) =&gt; {
+  <span class="hljs-keyword">const</span> lenses = mLenses(<span class="hljs-string">'sets'</span>, metrics)
+  <span class="hljs-keyword">return</span> R.reduce((stats, mLens) =&gt; {
+    <span class="hljs-keyword">const</span> setCount = R.keys(R.view(store(mLens), metrics)).length
+    <span class="hljs-keyword">return</span> S.pipe([ R.over(x(mLens), R.concat(R.__, R.repeat(timestamp, setCount)))
+                  , R.over(y(mLens), R.concat(R.__, S.pipe([R.keys, R.map(toInt)], R.view(store(mLens), metrics))))
+                  ], stats)
+  }, initStats(lenses, stats), lenses)
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p><code>setTimersHour :: [Lenses s a] -&gt; String -&gt; Object -&gt; Object -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setTimersHour = R.curry((mLenses, timestamp, metrics, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; {
+    <span class="hljs-keyword">const</span> timerHour = R.view(hour(mLens), stats)
+        , lastY     = R.compose(hour(mLens), R.lensIndex(timerHour.length - <span class="hljs-number">1</span>), R.lensProp(<span class="hljs-string">'y'</span>))
+
+    <span class="hljs-keyword">if</span> (R.not(R.isEmpty(timerHour)) &amp;&amp; timestamp - R.last(timerHour).x &lt; <span class="hljs-number">60</span> * <span class="hljs-number">1000</span>)
+      <span class="hljs-keyword">return</span> R.over(lastY, R.concat(R.view(mLens, metrics)), stats)
+    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">return</span> R.over(hour(mLens), R.append({
+        x: timestamp,
+        y: R.view(mLens, metrics),
+        name: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>(timestamp).toLocaleString(),
+        type: <span class="hljs-string">'box'</span>,
+        boxmean: <span class="hljs-literal">true</span>
+      }), stats)
+  }, stats, mLenses))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p><code>setTimersXY :: [Lenses s a] -&gt; String -&gt; Object -&gt; Object -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setTimersXY = R.curry((mLenses, timestamp, metrics, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; {
+    <span class="hljs-keyword">const</span> mean  = <span class="hljs-built_in">Math</span>.round(R.mean(R.view(mLens, metrics)))
+        , plus  = R.reduce(R.max, <span class="hljs-number">0</span>, R.view(mLens, metrics)) - mean
+        , minus = mean - R.reduce(R.min, <span class="hljs-literal">Infinity</span>, R.view(mLens, metrics))
+    
+    <span class="hljs-keyword">return</span> S.pipe([ R.over(x(mLens),      R.append(timestamp))
+                  , R.over(y(mLens),      R.append(mean))
+                  , R.over(aplus(mLens),  R.append(plus))
+                  , R.over(aminus(mLens), R.append(minus))], stats)
+  }, stats, mLenses))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p><code>setTimers :: Object -&gt; Object -&gt; Object -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setTimers = R.curry((timestamp, metrics, stats) =&gt; {
+  <span class="hljs-keyword">const</span> lenses = mLenses(<span class="hljs-string">'timers'</span>, metrics)
+  <span class="hljs-keyword">return</span> S.pipe([ initTimers(lenses)
+                , setTimersHour(lenses, timestamp, metrics)
+                , setTimersXY(lenses, timestamp, metrics)
+                ], stats)
+})</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p><code>setStats :: Object -&gt; Object -&gt; Object -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setStats = R.curry((timestamp, metrics, stats) =&gt;
+  S.pipe([ setXY(timestamp, metrics)
+         , setSets(timestamp, metrics)
+         , setTimers(timestamp, metrics) ], stats))
+
+
+<span class="hljs-built_in">module</span>.exports = {
+  setTimersHour: setTimersHour,
+  setTimersXY:   setTimersXY,
+
+  initTimers: initTimers,
+  initStats:  initStats,
+
+  setTimers:  setTimers,
+  setStats:   setStats,
+  setSets:    setSets,
+  setXY:      setXY,
+  setX:       setX,
+  setY:       setY,
+
+  mLenses:    mLenses,
+
+  printLens:  printLens,
+  toInt:      toInt,
+  log:        log
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

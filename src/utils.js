@@ -1,31 +1,31 @@
 const R = require('ramda')
     , S = require('sanctuary')
 
-// Debugging Tools
-// :: a -> a
-// const log = R.tap(x => console.log('log: ', x))
+// `log :: a -> a`  
+// Uses `R.tap` to print to console
+const log = R.tap(x => console.log('log: ', x))
 
-// Debugs lensPath/lensProp composed lenses
-// :: Lens s a -> String
-// const printLens = lens => JSON.stringify(R.set(lens, true, {}))
+// `printLens :: Lens s a -> String`  
+// Prints `lensPath`/`lensProp` lenses
+const printLens = lens => JSON.stringify(R.set(lens, true, {}))
 
-// :: String -> Int
+// `toInt :: String -> Int`
 const toInt = R.curryN(1, parseInt)
 
+// `mLenses :: String -> Object -> [Lens s a]`  
 // Takes a metric type and the metrics, and returns lenss to all the keys in that metric
-// :: String -> Object -> [Lens s a]
 const mLenses = R.curry((type, metrics) => S.pipe([R.prop(type), R.keys, R.map(R.pipe(R.pair(type), R.lensPath))], metrics))
 
-// :: Object -> [Lens s a] -> Object -> Object
+// `_initStats :: Object -> [Lens s a] -> Object -> Object`
 const _initStats = R.curry((object, mLenses, stats) =>
   R.reduce((stats, mLens) =>
     R.when(R.pipe(R.view(mLens), R.isNil), R.set(mLens, object))(stats), stats, mLenses))
 
-// :: [Lens s a] -> Object -> Object 
+// `:: [Lens s a] -> Object -> Object` 
 const initStats  = _initStats({ x: [], y: [] })
     , initTimers = _initStats({ hour: [], x: [], y: [], error_y: { array: [], arrayminus: [] } })
 
-// :: Lens s a => Lens s a
+// `:: Lens s a => Lens s a`
 const x      = lens => R.compose(lens, R.lensProp('x'))
     , y      = lens => R.compose(lens, R.lensProp('y'))
     , hour   = lens => R.compose(lens, R.lensProp('hour'))
@@ -34,12 +34,12 @@ const x      = lens => R.compose(lens, R.lensProp('x'))
     , aminus = lens => R.compose(lens, R.lensPath(['error_y', 'arrayminus']))
 
 
-// :: Int -> Object -> [Lens s a] -> Object
+// `setX :: Int -> Object -> [Lens s a] -> Object`
 const setX = R.curry((timestamp, mLenses, stats) =>
   R.reduce((stats, mLens) => 
     R.over(x(mLens), R.append(timestamp), stats), stats, mLenses))
 
-// :: String -> Object -> [Lens s a] -> Object
+// `setY :: String -> Object -> [Lens s a] -> Object`
 const setY = R.curry((metrics, mLenses, stats) =>
   R.reduce((stats, mLens) => { 
     return S.pipe([R.view(store(mLens)), R.isNil, R.not], metrics) ?
@@ -47,14 +47,26 @@ const setY = R.curry((metrics, mLenses, stats) =>
            R.over(y(mLens), R.append(R.view(mLens, metrics)), stats)
   }, stats, mLenses))
 
-// :: Object -> Int -> Object
+// `setXY :: Object -> Int -> Object`
 const setXY = R.curry((timestamp, metrics, stats) => {
-  const lenses = R.flatten(['counters', 'counter_rates', 'gauges', 'sets'].map(type => mLenses(type, metrics)))
+  const lenses = R.flatten(['counters', 'counter_rates', 'gauges'].map(type => mLenses(type, metrics)))
   return S.pipe([initStats(lenses), setX(timestamp, lenses), setY(metrics, lenses)], stats)
 })
 
 
-// :: [Lenses s a] -> String -> Object -> Object -> Object
+// `setSets :: String -> Object -> Object -> Object`
+const setSets = R.curry((timestamp, metrics, stats) => {
+  const lenses = mLenses('sets', metrics)
+  return R.reduce((stats, mLens) => {
+    const setCount = R.keys(R.view(store(mLens), metrics)).length
+    return S.pipe([ R.over(x(mLens), R.concat(R.__, R.repeat(timestamp, setCount)))
+                  , R.over(y(mLens), R.concat(R.__, S.pipe([R.keys, R.map(toInt)], R.view(store(mLens), metrics))))
+                  ], stats)
+  }, initStats(lenses, stats), lenses)
+})
+
+
+// `setTimersHour :: [Lenses s a] -> String -> Object -> Object -> Object`
 const setTimersHour = R.curry((mLenses, timestamp, metrics, stats) =>
   R.reduce((stats, mLens) => {
     const timerHour = R.view(hour(mLens), stats)
@@ -72,7 +84,7 @@ const setTimersHour = R.curry((mLenses, timestamp, metrics, stats) =>
       }), stats)
   }, stats, mLenses))
 
-// :: [Lenses s a] -> String -> Object -> Object -> Object
+// `setTimersXY :: [Lenses s a] -> String -> Object -> Object -> Object`
 const setTimersXY = R.curry((mLenses, timestamp, metrics, stats) =>
   R.reduce((stats, mLens) => {
     const mean  = Math.round(R.mean(R.view(mLens, metrics)))
@@ -85,7 +97,7 @@ const setTimersXY = R.curry((mLenses, timestamp, metrics, stats) =>
                   , R.over(aminus(mLens), R.append(minus))], stats)
   }, stats, mLenses))
 
-// :: Object -> Object -> Object -> Object
+// `setTimers :: Object -> Object -> Object -> Object`
 const setTimers = R.curry((timestamp, metrics, stats) => {
   const lenses = mLenses('timers', metrics)
   return S.pipe([ initTimers(lenses)
@@ -95,9 +107,11 @@ const setTimers = R.curry((timestamp, metrics, stats) => {
 })
 
 
-// :: Object -> Object -> Object -> Object
+// `setStats :: Object -> Object -> Object -> Object`
 const setStats = R.curry((timestamp, metrics, stats) =>
-  S.pipe([setXY(timestamp, metrics), setTimers(timestamp, metrics)], stats))
+  S.pipe([ setXY(timestamp, metrics)
+         , setSets(timestamp, metrics)
+         , setTimers(timestamp, metrics) ], stats))
 
 
 module.exports = {
@@ -109,11 +123,14 @@ module.exports = {
 
   setTimers:  setTimers,
   setStats:   setStats,
+  setSets:    setSets,
   setXY:      setXY,
   setX:       setX,
   setY:       setY,
 
   mLenses:    mLenses,
 
-  toInt:      toInt
+  printLens:  printLens,
+  toInt:      toInt,
+  log:        log
 }
