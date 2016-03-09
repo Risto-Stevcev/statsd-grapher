@@ -1,0 +1,422 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for src/utils.js</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">src/</a> utils.js
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>41/41</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>6/6</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/0</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">100% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>38/38</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line high'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120</td><td class="line-coverage quiet"><span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-yes">25×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18×</span>
+<span class="cline-any cline-yes">17×</span>
+<span class="cline-any cline-yes">28×</span>
+<span class="cline-any cline-yes">14×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">4×</span>
+<span class="cline-any cline-yes">11×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">12×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">5×</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">3×</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-yes">2×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1×</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const R = require('ramda')
+    , S = require('sanctuary')
+&nbsp;
+// Debugging Tools
+// :: a -&gt; a
+// const log = R.tap(x =&gt; console.log('log: ', x))
+&nbsp;
+// Debugs lensPath/lensProp composed lenses
+// :: Lens s a -&gt; String
+// const printLens = lens =&gt; JSON.stringify(R.set(lens, true, {}))
+&nbsp;
+// :: String -&gt; Int
+const toInt = R.curryN(1, parseInt)
+&nbsp;
+// Takes a metric type and the metrics, and returns lenss to all the keys in that metric
+// :: String -&gt; Object -&gt; [Lens s a]
+const mLenses = R.curry((type, metrics) =&gt; S.pipe([R.prop(type), R.keys, R.map(R.pipe(R.pair(type), R.lensPath))], metrics))
+&nbsp;
+// :: Object -&gt; [Lens s a] -&gt; Object -&gt; Object
+const _initStats = R.curry((object, mLenses, stats) =&gt;
+  R.reduce((stats, mLens) =&gt;
+    R.when(R.pipe(R.view(mLens), R.isNil), R.set(mLens, object))(stats), stats, mLenses))
+&nbsp;
+// :: [Lens s a] -&gt; Object -&gt; Object 
+const initStats  = _initStats({ x: [], y: [] })
+    , initTimers = _initStats({ hour: [], x: [], y: [], error_y: { array: [], arrayminus: [] } })
+&nbsp;
+// :: Lens s a =&gt; Lens s a
+const x      = lens =&gt; R.compose(lens, R.lensProp('x'))
+    , y      = lens =&gt; R.compose(lens, R.lensProp('y'))
+    , hour   = lens =&gt; R.compose(lens, R.lensProp('hour'))
+    , store  = lens =&gt; R.compose(lens, R.lensProp('store'))
+    , aplus  = lens =&gt; R.compose(lens, R.lensPath(['error_y', 'array']))
+    , aminus = lens =&gt; R.compose(lens, R.lensPath(['error_y', 'arrayminus']))
+&nbsp;
+&nbsp;
+// :: Int -&gt; Object -&gt; [Lens s a] -&gt; Object
+const setX = R.curry((timestamp, mLenses, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; 
+    R.over(x(mLens), R.append(timestamp), stats), stats, mLenses))
+&nbsp;
+// :: String -&gt; Object -&gt; [Lens s a] -&gt; Object
+const setY = R.curry((metrics, mLenses, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; { 
+    return S.pipe([R.view(store(mLens)), R.isNil, R.not], metrics) ?
+           R.over(y(mLens), R.concat(R.__, R.view(store(mLens), metrics)), stats) :
+           R.over(y(mLens), R.append(R.view(mLens, metrics)), stats)
+  }, stats, mLenses))
+&nbsp;
+// :: Object -&gt; Int -&gt; Object
+const setXY = R.curry((timestamp, metrics, stats) =&gt; {
+  const lenses = R.flatten(['counters', 'counter_rates', 'gauges', 'sets'].map(type =&gt; mLenses(type, metrics)))
+  return S.pipe([initStats(lenses), setX(timestamp, lenses), setY(metrics, lenses)], stats)
+})
+&nbsp;
+&nbsp;
+// :: [Lenses s a] -&gt; String -&gt; Object -&gt; Object -&gt; Object
+const setTimersHour = R.curry((mLenses, timestamp, metrics, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; {
+    const timerHour = R.view(hour(mLens), stats)
+        , lastY     = R.compose(hour(mLens), R.lensIndex(timerHour.length - 1), R.lensProp('y'))
+&nbsp;
+    if (R.not(R.isEmpty(timerHour)) &amp;&amp; timestamp - R.last(timerHour).x &lt; 60 * 1000)
+      return R.over(lastY, R.concat(R.view(mLens, metrics)), stats)
+    else
+      return R.over(hour(mLens), R.append({
+        x: timestamp,
+        y: R.view(mLens, metrics),
+        name: new Date(timestamp).toLocaleString(),
+        type: 'box',
+        boxmean: true
+      }), stats)
+  }, stats, mLenses))
+&nbsp;
+// :: [Lenses s a] -&gt; String -&gt; Object -&gt; Object -&gt; Object
+const setTimersXY = R.curry((mLenses, timestamp, metrics, stats) =&gt;
+  R.reduce((stats, mLens) =&gt; {
+    const mean  = Math.round(R.mean(R.view(mLens, metrics)))
+        , plus  = R.reduce(R.max, 0, R.view(mLens, metrics)) - mean
+        , minus = mean - R.reduce(R.min, Infinity, R.view(mLens, metrics))
+    
+    return S.pipe([ R.over(x(mLens),      R.append(timestamp))
+                  , R.over(y(mLens),      R.append(mean))
+                  , R.over(aplus(mLens),  R.append(plus))
+                  , R.over(aminus(mLens), R.append(minus))], stats)
+  }, stats, mLenses))
+&nbsp;
+// :: Object -&gt; Object -&gt; Object -&gt; Object
+const setTimers = R.curry((timestamp, metrics, stats) =&gt; {
+  const lenses = mLenses('timers', metrics)
+  return S.pipe([ initTimers(lenses)
+                , setTimersHour(lenses, timestamp, metrics)
+                , setTimersXY(lenses, timestamp, metrics)
+                ], stats)
+})
+&nbsp;
+&nbsp;
+// :: Object -&gt; Object -&gt; Object -&gt; Object
+const setStats = R.curry((timestamp, metrics, stats) =&gt;
+  S.pipe([setXY(timestamp, metrics), setTimers(timestamp, metrics)], stats))
+&nbsp;
+&nbsp;
+module.exports = {
+  setTimersHour: setTimersHour,
+  setTimersXY:   setTimersXY,
+&nbsp;
+  initTimers: initTimers,
+  initStats:  initStats,
+&nbsp;
+  setTimers:  setTimers,
+  setStats:   setStats,
+  setXY:      setXY,
+  setX:       setX,
+  setY:       setY,
+&nbsp;
+  mLenses:    mLenses,
+&nbsp;
+  toInt:      toInt
+}
+&nbsp;</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Wed Mar 09 2016 06:38:44 GMT+0100 (CET)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

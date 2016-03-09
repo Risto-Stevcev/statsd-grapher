@@ -1,0 +1,14 @@
+body {
+  font-family: 'Josefin Sans', 'Arial';
+}
+h3 > span {
+  color: lightgray;
+  visibility: hidden;
+}
+h3 > a:hover + span {
+  visibility: visible;
+}
+a {
+  color: black;
+  text-decoration: none;
+}

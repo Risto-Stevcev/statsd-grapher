@@ -1,0 +1,35 @@
+{
+  "name": "statsd-grapher",
+  "version": "0.0.1",
+  "description": "A statsd backend that serves an http page with the graphical data",
+  "main": "exampleConfig.js",
+  "dependencies": {
+    "express": "4.13.x",
+    "jade": "1.11.x",
+    "ramda": "0.19.x",
+    "sanctuary": "^0.9.0",
+    "statsd": "0.7.x"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "gulp-webdriver": "1.0.3",
+    "istanbul": "^0.4.2",
+    "mocha": "^2.4.5"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "./node_modules/.bin/mocha",
+    "coverage": "./node_modules/.bin/istanbul cover ./node_modules/.bin/_mocha"
+  },
+  "author": "Risto Stevcev",
+  "license": "MIT",
+  "keywords": [
+    "statsd",
+    "backend",
+    "graph",
+    "graphical",
+    "data",
+    "http",
+    "site"
+  ]
+}

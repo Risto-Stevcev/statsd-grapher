@@ -1,0 +1,115 @@
+doctype html
+html(lang='en')
+  head
+    title statsD grapher
+    link(href='https://fonts.googleapis.com/css?family=Josefin+Sans' rel='stylesheet' type='text/css')
+    link(href='favicon.png' rel='icon' type='image/png')
+    link(href='style.css' rel='stylesheet' type='text/css')
+    script(type='text/javascript', src='plotly-latest.min.js')
+
+    script.
+      var renderLineGraph = function(name, type, data) {
+        var layout = {
+          yaxis: {
+            title: name +' (week)',
+            rangemode: 'nonnegative'
+          },
+          xaxis: {
+            showgrid: false,
+            type: 'date',
+            tickmode: 'auto',
+            nticks: 60,
+            tickformat: "%m/%d/%y %I:%M %p"
+          },
+          margin: { t: 50, b: 120 }
+        };
+        Plotly.plot(document.getElementById(name +'_'+ type), data, layout);
+      }
+    
+
+  h2 Counters
+  each value, name in counters
+    h3(id!=name +'_counter_h')
+      a(href!='#'+ name +'_counter_h') #{name}:
+      span &nbsp;§
+    div(id!=name +'_counter')
+    script.
+      renderLineGraph('!{name}', 'counter', [{ x: [!{value.x}], y: [!{value.y}] }])
+
+
+  hr
+
+
+  h2 Counter Rates
+  each value, name in counter_rates
+    h3(id!=name +'_counter_rates_h')
+      a(href!='#'+ name +'_counter_rates_h') #{name}:
+      span &nbsp;§
+    div(id!=name +'_counter_rates')
+    script.
+      renderLineGraph('!{name}', 'counter_rates', [{ x: [!{value.x}], y: [!{value.y}] }])
+
+
+  hr
+
+
+  h2 Gauges
+  each value, name in gauges
+    h3(id!=name +'_gauges_h')
+      a(href!='#'+ name +'_gauges_h') #{name}:
+      span &nbsp;§
+    div(id!=name +'_gauges')
+    script.
+      renderLineGraph('!{name}', 'gauges', [{ x: [!{value.x}], y: [!{value.y}], line: { shape: 'vh' } }])
+
+
+  hr
+
+
+  h2 Timers
+  each value, name in timers
+    h3(id!=name +'_timer_h')
+      a(href!='#'+ name +'_timer_h') #{name}:
+      span &nbsp;§
+
+    div(id!=name +'_timer')
+    script.
+      renderLineGraph('!{name}', 'timer', [{
+        y: [!{value.y}],
+        x: [!{value.x}],
+        error_y: {
+          array:      [!{value.error_y.array}],
+          arrayminus: [!{value.error_y.arrayminus}]
+        },
+      }]);
+
+    div(id!=name +'_timer_box')
+    script.
+      var data = !{JSON.stringify(value.hour)};
+      var layout = {
+        yaxis: {
+          title: '!{name} (hour)',
+          rangemode: 'nonnegative'
+        },
+        xaxis: {
+          tickmode: 'auto',
+          nticks: 60
+        },
+        showlegend: false
+      };
+
+      Plotly.plot(document.getElementById("!{name +'_timer_box'}"), data, layout);
+
+
+  hr
+
+
+  h2 Sets
+  each value, name in sets
+    h3(id!=name +'_sets_h')
+      a(href!='#'+ name +'_sets_h') #{name}:
+      span &nbsp;§
+
+    div(id!=name +'_sets')
+    script.
+      renderLineGraph('!{name}', 'sets', [{ x: [!{value.x}], y: [!{value.y}], mode: 'markers' }])
