@@ -1,6 +1,6 @@
 {
   "name": "statsd-grapher",
-  "version": "0.0.10",
+  "version": "0.1.0",
   "description": "A statsd backend that serves an http page with the graphical data",
   "main": "server.js",
   "repository": {
