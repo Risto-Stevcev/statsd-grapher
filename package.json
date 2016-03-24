@@ -1,6 +1,6 @@
 {
   "name": "statsd-grapher",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A statsd backend that serves an http page with the graphical data",
   "main": "server.js",
   "repository": {
@@ -27,7 +27,6 @@
     "gulp-webdriver": "1.0.x",
     "mocha-lcov-reporter": "1.2.x",
     "node-statsd": "0.1.x",
-    "phantomjs": "2.1.x",
     "pure-random": "0.1.x",
     "selenium-standalone": "5.0.x"
   },
