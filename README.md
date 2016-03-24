@@ -50,7 +50,7 @@ The library currently uses `plotly` to graph the stats. It can often lag when ha
 
 # Example Graph
 
-[![Sample Graph](https://raw.githubusercontent.com/Risto-Stevcev/statsd-grapher/master/graph.png)](https://raw.githubusercontent.com/Risto-Stevcev/statsd-grapher/master/graph.png)
+[![Sample Graph](http://risto-stevcev.github.io/statsd-grapher/graph.png)](http://risto-stevcev.github.io/statsd-grapher/graph.png)
 
 
 # Contributors

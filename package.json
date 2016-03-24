@@ -1,6 +1,6 @@
 {
   "name": "statsd-grapher",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A statsd backend that serves an http page with the graphical data",
   "main": "server.js",
   "repository": {
@@ -9,9 +9,9 @@
   },
   "dependencies": {
     "express": "4.13.x",
-    "express-session": "^1.13.0",
+    "express-session": "1.13.x",
     "jade": "1.11.x",
-    "node-uuid": "^1.4.7",
+    "node-uuid": "1.4.x",
     "ramda": "0.19.x",
     "sanctuary": "0.9.x"
   },
@@ -19,7 +19,7 @@
     "chai": "3.5.x",
     "chai-as-promised": "5.2.x",
     "docco": "0.7.x",
-    "globby": "^4.0.0",
+    "globby": "4.0.x",
     "gulp": "3.9.x",
     "gulp-coveralls": "0.1.x",
     "gulp-istanbul": "0.10.x",
