@@ -1,5 +1,5 @@
 const gulp      = require('gulp')
-    , glob      = require('glob')
+    , globby    = require('globby')
     , mocha     = require('gulp-mocha')
     , istanbul  = require('gulp-istanbul')
     , coveralls = require('gulp-coveralls')
@@ -46,7 +46,7 @@ gulp.task('metrics', ['statsd'], done => {
 
 
 gulp.task('docs', done => {
-  glob('src/utils.js', (err, files) => {
+  globby(['server.js', 'src/utils.js']).then(files => {
     const docco = spawn('node_modules/.bin/docco', ['--output', 'docs'].concat(files), { stdio: 'inherit' })
     docco.on('close', _ => done())
   })

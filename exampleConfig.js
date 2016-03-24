@@ -113,8 +113,8 @@ Optional Variables:
                          changes. The default is true. Set this to false to disable.
 */
 { port: 8125
-, expressPort: 5000
 , flushInterval: 5000
-, tokens: ['foo', 'bar']
-, backends: [ "./backends/console", "../../server" ]
+//, expressPort: 3000
+//, tokens: [ 'some_uuid_1', 'some_uuid_2' ]
+, backends: [ './backends/console', '../statsd-grapher/server' ]
 }

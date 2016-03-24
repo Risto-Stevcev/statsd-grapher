@@ -160,13 +160,13 @@ describe('setTimersHour', function() {
       gauges: { baz: { x: [123456], y: [3] } },
       timers: {
         request: {
-          hour: [ { x: timestamp,  y: [450,76,300,5,23], name: locale(timestamp),  type: "box", boxmean: true }
-                , { x: timestamp3, y: [5,3],             name: locale(timestamp3), type: "box", boxmean: true } ],
+          hour: [ { x: timestamp,  y: [450,76,300,5,23], name: locale(timestamp),  type: 'box', boxmean: true }
+                , { x: timestamp3, y: [5,3],             name: locale(timestamp3), type: 'box', boxmean: true } ],
           x: [], y: [], error_y: { array: [], arrayminus: [] }
         },
         response: {
-          hour: [ { x: timestamp,  y: [83,20,235],    name: locale(timestamp),  type: "box", boxmean: true }
-                , { x: timestamp3, y: [832,2235,502], name: locale(timestamp3), type: "box", boxmean: true } ],
+          hour: [ { x: timestamp,  y: [83,20,235],    name: locale(timestamp),  type: 'box', boxmean: true }
+                , { x: timestamp3, y: [832,2235,502], name: locale(timestamp3), type: 'box', boxmean: true } ],
           x: [], y: [], error_y: { array: [], arrayminus: [] }
         }
       }
@@ -201,11 +201,11 @@ describe('setTimers', function() {
       gauges: { baz: { x: [123456], y: [3] } },
       timers: {
         request: {
-          hour: [{ x: timestamp, y: [300,5,23], name: locale(timestamp), type: "box", boxmean: true }],
+          hour: [{ x: timestamp, y: [300,5,23], name: locale(timestamp), type: 'box', boxmean: true }],
           x: [timestamp], y: [109], error_y: { array: [191], arrayminus: [104] }
         },
         response: {
-          hour: [{ x: timestamp, y: [20,235], name: locale(timestamp), type: "box", boxmean: true }],
+          hour: [{ x: timestamp, y: [20,235], name: locale(timestamp), type: 'box', boxmean: true }],
           x: [timestamp], y: [128], error_y: { array: [107], arrayminus: [108] }
         }
       }
@@ -227,15 +227,163 @@ describe('setStats', function() {
       counters: { foo: { x: [timestamp], y: [1] }, bar: { x: [timestamp], y: [2] } },
       timers: {
         request: {
-          hour: [{ x: timestamp, y: [300,5,23], name: locale(timestamp), type: "box", boxmean: true }],
+          hour: [{ x: timestamp, y: [300,5,23], name: locale(timestamp), type: 'box', boxmean: true }],
           x: [timestamp], y: [109], error_y: { array: [191], arrayminus: [104] }
         },
         response: {
-          hour: [{ x: timestamp, y: [20,235], name: locale(timestamp), type: "box", boxmean: true }],
+          hour: [{ x: timestamp, y: [20,235], name: locale(timestamp), type: 'box', boxmean: true }],
           x: [timestamp], y: [128], error_y: { array: [107], arrayminus: [108] }
         }
       },
       sets: { uniq: { x: [timestamp,timestamp,timestamp], y: [4,5,6] } }
+    })
+  })
+})
+
+describe('testNs', function() {
+  it('should test a string to see if it begins with the namespace', function() {
+    expect(U.testNs('http.get', 'http.get')).to.be.true
+    expect(U.testNs('http.get', 'http.get.foo')).to.be.true
+    expect(U.testNs('http.put', 'http.get.foo')).to.be.false
+    expect(U.testNs('http.get', 'http.put.foo')).to.be.false
+  })
+})
+
+describe('pickNs', function() {
+  it('should pick key/value pairs that only match the given namespace', function() {
+    const counters = { 'http.get.foo': 1, 'http.get.bar': 1, 'http.get.bar.qux': 0, 'http.put.foo': 1 }
+    expect(U.pickNs('ftp', counters)).to.be.empty
+    expect(U.pickNs('http', counters)).to.deep.equal(counters)
+    expect(U.pickNs('http.put', counters)).to.deep.equal({ 'http.put.foo': 1 })
+    expect(U.pickNs('http.get.bar', counters)).to.deep.equal({ 'http.get.bar': 1, 'http.get.bar.qux': 0 })
+    expect(U.pickNs('http.get', counters)).to.deep.equal({ 'http.get.foo': 1, 'http.get.bar': 1, 'http.get.bar.qux': 0 })
+  })
+
+  it('should properly match periods as actual periods and not RegEx . (any char)', function() {
+    expect(U.pickNs('http.put', { 'http-put-foo': 1 })).to.be.empty
+  })
+})
+
+describe('filterStats', function() {
+  describe('stats keys', function() {
+    before(function() {
+      this.stats = {
+        counters: ['http.get.foo', 'http.get.bar', 'http.get.bar.qux', 'http.put.foo'],
+        counter_rates: ['http.post.norf'],
+        timers: ['http.put.baz', 'http.put.qux'],
+        gauges: ['http.get.bar']
+      }
+    })
+
+    it('should filter for a specific metric', function() {
+      expect(U.filterStats('ftp', 'counters', this.stats)).to.be.empty
+      expect(U.filterStats('http', 'counters', this.stats)).to.deep.equal(this.stats.counters)
+      expect(U.filterStats('http.get', 'counters', this.stats)).to.deep.equal(['http.get.foo', 'http.get.bar', 'http.get.bar.qux'])
+      expect(U.filterStats('http.get.bar', 'counters', this.stats)).to.deep.equal(['http.get.bar', 'http.get.bar.qux'])
+    })
+
+    it('should filter all metrics if "all" is passed', function() {
+      expect(U.filterStats('http.get', 'all', this.stats)).to.deep.equal({
+        counter_rates: [],
+        counters: ['http.get.foo', 'http.get.bar', 'http.get.bar.qux'],
+        gauges: ['http.get.bar'],
+        timers: []
+      })
+
+      expect(U.filterStats('http.get.bar', 'all', this.stats)).to.deep.equal({
+        counter_rates: [],
+        counters: ['http.get.bar', 'http.get.bar.qux'],
+        gauges: ['http.get.bar'],
+        timers: []
+      })
+
+      expect(U.filterStats('http.put', 'all', this.stats)).to.deep.equal({
+        counter_rates: [],
+        counters: ['http.put.foo'],
+        gauges: [],
+        timers: ['http.put.baz', 'http.put.qux']
+      })
+
+      expect(U.filterStats('http.post', 'all', this.stats)).to.deep.equal({
+        counter_rates: ['http.post.norf'],
+        counters: [],
+        gauges: [],
+        timers: []
+      })
+
+      expect(U.filterStats('http', 'all', this.stats)).to.deep.equal(this.stats)
+
+      expect(U.filterStats('ftp', 'all', this.stats)).to.deep.equal({
+        counter_rates: [],
+        counters: [],
+        gauges: [],
+        timers: []
+      })
+
+      expect(U.filterStats('', '', this.stats)).to.be.empty
+      expect(U.filterStats('blah', '', this.stats)).to.be.empty
+      expect(U.filterStats('', 'blah', this.stats)).to.be.empty
+    })
+  })
+
+  describe('full stats', function() {
+    before(function() {
+      this.stats = {
+        counters: { 'http.get.foo': 1, 'http.get.bar': 1, 'http.get.bar.qux': 0, 'http.put.foo': 1 },
+        counter_rates: { 'http.post.norf': 1.2 },
+        timers: { 'http.put.baz': [123], 'http.put.qux': [345] },
+        gauges: { 'http.get.bar': 200 }
+      }
+    })
+
+    it('should filter for a specific metric', function() {
+      expect(U.filterStats('ftp', 'counters', this.stats)).to.be.empty
+      expect(U.filterStats('http', 'counters', this.stats)).to.deep.equal(this.stats.counters)
+      expect(U.filterStats('http.get', 'counters', this.stats)).to.deep.equal({ 'http.get.foo': 1, 'http.get.bar': 1, 'http.get.bar.qux': 0 })
+      expect(U.filterStats('http.get.bar', 'counters', this.stats)).to.deep.equal({ 'http.get.bar': 1, 'http.get.bar.qux': 0 })
+    })
+
+    it('should filter all metrics if "all" is passed', function() {
+      expect(U.filterStats('http.get', 'all', this.stats)).to.deep.equal({
+        counter_rates: {},
+        counters: { 'http.get.foo': 1, 'http.get.bar': 1, 'http.get.bar.qux': 0 },
+        gauges: { 'http.get.bar': 200 },
+        timers: {}
+      })
+
+      expect(U.filterStats('http.get.bar', 'all', this.stats)).to.deep.equal({
+        counter_rates: {},
+        counters: { 'http.get.bar': 1, 'http.get.bar.qux': 0 },
+        gauges: { 'http.get.bar': 200 },
+        timers: {}
+      })
+
+      expect(U.filterStats('http.put', 'all', this.stats)).to.deep.equal({
+        counter_rates: {},
+        counters: { 'http.put.foo': 1 },
+        gauges: {},
+        timers: { 'http.put.baz': [123], 'http.put.qux': [345] }
+      })
+
+      expect(U.filterStats('http.post', 'all', this.stats)).to.deep.equal({
+        counter_rates: { 'http.post.norf': 1.2 },
+        counters: {},
+        gauges: {},
+        timers: {}
+      })
+
+      expect(U.filterStats('http', 'all', this.stats)).to.deep.equal(this.stats)
+
+      expect(U.filterStats('ftp', 'all', this.stats)).to.deep.equal({
+        counter_rates: {},
+        counters: {},
+        gauges: {},
+        timers: {}
+      })
+
+      expect(U.filterStats('', '', this.stats)).to.be.empty
+      expect(U.filterStats('blah', '', this.stats)).to.be.empty
+      expect(U.filterStats('', 'blah', this.stats)).to.be.empty
     })
   })
 })

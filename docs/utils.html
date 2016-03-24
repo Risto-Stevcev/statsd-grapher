@@ -11,6 +11,29 @@
   <div id="container">
     <div id="background"></div>
     
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="server.html">
+                  server.js
+                </a>
+              
+                
+                <a class="source" href="utils.html">
+                  utils.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
     <ul class="sections">
         
           <li id="title">
@@ -87,7 +110,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p><code>mLenses :: String -&gt; Object -&gt; [Lens s a]</code><br>Takes a metric type and the metrics, and returns lenss to all the keys in that metric</p>
+              <p><code>mLenses :: String -&gt; Object -&gt; [Lens s a]</code><br>Takes a metric type and the metrics, and returns lenses to all the keys in that metric</p>
 
             </div>
             
@@ -316,7 +339,61 @@
             <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> setStats = R.curry((timestamp, metrics, stats) =&gt;
   S.pipe([ setXY(timestamp, metrics)
          , setSets(timestamp, metrics)
-         , setTimers(timestamp, metrics) ], stats))
+         , setTimers(timestamp, metrics) ], stats))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p><code>testNs :: String -&gt; String -&gt; Boolean</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> testNs = R.curry((namespace, string) =&gt; R.test(<span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">`^<span class="hljs-subst">${namespace.replace(/\./g, '\\.')}</span>`</span>), string))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p><code>pickNs :: String -&gt; Object -&gt; Object</code> </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> pickNs = R.curry((namespace, stats) =&gt;
+  R.ifElse(R.isArrayLike,
+           R.filter(testNs(namespace)),
+           R.pickBy(R.flip(testNs(namespace))))(stats))</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p><code>filterStats :: String -&gt; String -&gt; Object -&gt; Object</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> filterStats = R.curry((namespace, metric, stats) =&gt; {
+  <span class="hljs-keyword">if</span> (metric === <span class="hljs-string">'all'</span>)
+    <span class="hljs-keyword">return</span> R.map(pickNs(namespace), stats)
+  <span class="hljs-keyword">else</span>
+    <span class="hljs-keyword">return</span> pickNs(namespace, stats[metric])
+})
+
 
 
 <span class="hljs-built_in">module</span>.exports = {
@@ -334,6 +411,10 @@
   setY:       setY,
 
   mLenses:    mLenses,
+
+  filterStats: filterStats,
+  pickNs:      pickNs,
+  testNs:      testNs,
 
   printLens:  printLens,
   toInt:      toInt,

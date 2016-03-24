@@ -4,10 +4,10 @@ doctype html
 html(lang='en')
   head
     title statsd grapher
-    link(href='TitilliumWeb.ttf' rel='stylesheet' type='text/css')
-    link(href='favicon.png' rel='icon' type='image/png')
-    link(href='style.css' rel='stylesheet' type='text/css')
-    script(type='text/javascript', src='plotly-latest.min.js')
+    link(href='/favicon.png' rel='icon' type='image/png')
+    link(href='/style.css' rel='stylesheet' type='text/css')
+    script(type='text/javascript', src='/jquery-2.2.2.min.js')
+    script(type='text/javascript', src='/plotly-latest.min.js')
 
     script.
       var renderLineGraph = function(name, type, data) {
@@ -23,7 +23,7 @@ html(lang='en')
             nticks: 60,
             tickformat: "%m/%d/%y %I:%M %p"
           },
-          margin: { t: 50, b: 120 }
+          margin: { t: 50, b: 150 }
         };
         Plotly.plot(document.getElementById(name +'_'+ type), data, layout);
       }
@@ -31,14 +31,16 @@ html(lang='en')
 
   h2 Counters
   if (counters)
-    each value, name in counters
+    each name in counters
       h3(id!=name +'_counter_h')
         a(href!='#'+ name +'_counter_h')
           +permalink
-          span  #{name}
+          span #{name}
       div(id!=name +'_counter')
       script.
-        renderLineGraph('!{name}', 'counter', [{ x: [!{value.x}], y: [!{value.y}] }])
+        $.getJSON('/metrics/counters/!{name}', function(data) {
+          renderLineGraph('!{name}', 'counter', [data]);
+        });
 
 
   hr
@@ -46,29 +48,33 @@ html(lang='en')
 
   h2 Counter Rates
   if (counter_rates)
-    each value, name in counter_rates
+    each name in counter_rates
       h3(id!=name +'_counter_rates_h')
         a(href!='#'+ name +'_counter_rates_h')
           +permalink
-          span  #{name}
+          span #{name}
       div(id!=name +'_counter_rates')
       script.
-        renderLineGraph('!{name}', 'counter_rates', [{ x: [!{value.x}], y: [!{value.y}] }])
-
+        $.getJSON('/metrics/counter_rates/!{name}', function(data) {
+          renderLineGraph('!{name}', 'counter_rates', [data]);
+        });
 
   hr
 
 
   h2 Gauges
   if (gauges)
-    each value, name in gauges
+    each name in gauges
       h3(id!=name +'_gauges_h')
         a(href!='#'+ name +'_gauges_h')
           +permalink
-          span  #{name}
+          span #{name}
       div(id!=name +'_gauges')
       script.
-        renderLineGraph('!{name}', 'gauges', [{ x: [!{value.x}], y: [!{value.y}], line: { shape: 'vh' } }])
+        $.getJSON('/metrics/gauges/!{name}', function(data) {
+          data.line = { shape: 'vh' };
+          renderLineGraph('!{name}', 'gauges', [data]);
+        });
 
 
   hr
@@ -76,40 +82,37 @@ html(lang='en')
 
   h2 Timers
   if (timers)
-    each value, name in timers
+    each name in timers
       h3(id!=name +'_timer_h')
         a(href!='#'+ name +'_timer_h')
           +permalink
-          span  #{name}
+          span #{name}
 
       div(id!=name +'_timer')
       script.
-        renderLineGraph('!{name}', 'timer', [{
-          y: [!{value.y}],
-          x: [!{value.x}],
-          error_y: {
-            array:      [!{value.error_y.array}],
-            arrayminus: [!{value.error_y.arrayminus}]
-          },
-        }]);
+        $.getJSON('/metrics/timers/!{name}', function(data) {
+          renderLineGraph('!{name}', 'timer', [data]);
+        });
 
       div(id!=name +'_timer_box')
       script.
-        var data = !{JSON.stringify(value.hour)};
-        var layout = {
-          yaxis: {
-            title: '!{name} (hour)',
-            rangemode: 'nonnegative'
-          },
-          xaxis: {
-            tickmode: 'auto',
-            nticks: 60
-          },
-          margin: { t: 50, b: 150 },
-          showlegend: false
-        };
+        $.getJSON('/metrics/timers/!{name}', function(data) {
+          var data = data.hour;
+          var layout = {
+            yaxis: {
+              title: '!{name} (hour)',
+              rangemode: 'nonnegative'
+            },
+            xaxis: {
+              tickmode: 'auto',
+              nticks: 60
+            },
+            margin: { t: 50, b: 150 },
+            showlegend: false
+          };
 
-        Plotly.plot(document.getElementById("!{name +'_timer_box'}"), data, layout);
+          Plotly.plot(document.getElementById("!{name +'_timer_box'}"), data, layout);
+        });
 
 
   hr
@@ -117,12 +120,15 @@ html(lang='en')
 
   h2 Sets
   if (sets)
-    each value, name in sets
+    each name in sets
       h3(id!=name +'_sets_h')
         a(href!='#'+ name +'_sets_h')
           +permalink
-          span  #{name}
+          span #{name}
 
       div(id!=name +'_sets')
       script.
-        renderLineGraph('!{name}', 'sets', [{ x: [!{value.x}], y: [!{value.y}], mode: 'markers' }])
+        $.getJSON('/metrics/sets/!{name}', function(data) {
+          data.mode = 'markers';
+          renderLineGraph('!{name}', 'sets', [data]);
+        });

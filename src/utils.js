@@ -13,7 +13,7 @@ const printLens = lens => JSON.stringify(R.set(lens, true, {}))
 const toInt = R.curryN(1, parseInt)
 
 // `mLenses :: String -> Object -> [Lens s a]`  
-// Takes a metric type and the metrics, and returns lenss to all the keys in that metric
+// Takes a metric type and the metrics, and returns lenses to all the keys in that metric
 const mLenses = R.curry((type, metrics) => S.pipe([R.prop(type), R.keys, R.map(R.pipe(R.pair(type), R.lensPath))], metrics))
 
 // `_initStats :: Object -> [Lens s a] -> Object -> Object`
@@ -114,6 +114,26 @@ const setStats = R.curry((timestamp, metrics, stats) =>
          , setTimers(timestamp, metrics) ], stats))
 
 
+
+// `testNs :: String -> String -> Boolean`
+const testNs = R.curry((namespace, string) => R.test(new RegExp(`^${namespace.replace(/\./g, '\\.')}`), string))
+
+// `pickNs :: String -> Object -> Object` 
+const pickNs = R.curry((namespace, stats) =>
+  R.ifElse(R.isArrayLike,
+           R.filter(testNs(namespace)),
+           R.pickBy(R.flip(testNs(namespace))))(stats))
+
+// `filterStats :: String -> String -> Object -> Object`
+const filterStats = R.curry((namespace, metric, stats) => {
+  if (metric === 'all')
+    return R.map(pickNs(namespace), stats)
+  else
+    return pickNs(namespace, stats[metric])
+})
+
+
+
 module.exports = {
   setTimersHour: setTimersHour,
   setTimersXY:   setTimersXY,
@@ -129,6 +149,10 @@ module.exports = {
   setY:       setY,
 
   mLenses:    mLenses,
+
+  filterStats: filterStats,
+  pickNs:      pickNs,
+  testNs:      testNs,
 
   printLens:  printLens,
   toInt:      toInt,
