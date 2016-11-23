@@ -11,9 +11,9 @@
     "express": "4.13.x",
     "express-session": "1.13.x",
     "jade": "1.11.x",
-    "node-uuid": "1.4.x",
     "ramda": "0.19.x",
-    "sanctuary": "0.9.x"
+    "sanctuary": "0.9.x",
+    "uuid": "^3.0.0"
   },
   "devDependencies": {
     "chai": "3.5.x",

@@ -1,6 +1,6 @@
 const express = require('express')
     , session = require('express-session')
-    , uuid    = require('node-uuid')
+    , uuid    = require('uuid')
 const R = require('ramda')
     , U = require('./src/utils')
 
